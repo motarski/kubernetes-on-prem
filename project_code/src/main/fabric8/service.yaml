@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${project.artifactId}
+  namespace: ${kube.namespace}
+  labels:
+    app: ${project.artifactId}
+spec:
+  type: ClusterIP
+  selector:
+    app: ${project.artifactId}
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80

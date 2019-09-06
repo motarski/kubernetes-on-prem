@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: ${project.artifactId}
+  name: ${project.artifactId}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 4
+  selector:
+    matchLabels:
+      run: ${project.artifactId}
+  template:
+    metadata:
+      labels:
+        run: ${project.artifactId}
+    spec:
+      containers:
+      - image: ${docker.image}:${version.number}
+        imagePullPolicy: Always
+        name: ${project.artifactId}

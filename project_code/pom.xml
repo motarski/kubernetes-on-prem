@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>edu.barjaktarov.local</groupId>
+  <artifactId>web-site</artifactId>
+  <version>1.0.0</version>
+
+  <name>Wordpress website BusyBox</name>
+  <description>Kubernetes deployed Wordpress website</description>
+
+  <properties>
+    <docker.image>motarski/${project.artifactId}</docker.image>
+    <loadbalancer.url>barjaktarov.local</loadbalancer.url>
+    <project.build.directory>project_code</project.build.directory>
+    <kube.namespace>default</kube.namespace>
+    <kube.context>kubernetes</kube.context>
+  </properties>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+
+    <plugins>
+      <plugin>
+        <artifactId>exec-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.6.0</version>
+        <executions>
+          <execution>
+            <id>set_kube_context</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>kubectl</executable>
+              <arguments>
+                <argument>config</argument>
+                <argument>use-context</argument>
+                <argument>${kube.context}</argument>
+              </arguments>
+              <successCodes>
+                <successCode>0</successCode>
+              </successCodes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy_to_kubernetes</id>
+            <phase>install</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>kubectl</executable>
+              <arguments>
+                <argument>apply</argument>
+                <argument>-f</argument>
+                <argument>${project.build.directory}/classes/META-INF/fabric8/kubernetes.yml</argument>
+              </arguments>
+              <successCodes>
+                <successCode>0</successCode>
+              </successCodes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <dateFormat>yyyyMMdd-HHmmss</dateFormat><!--  human-readable part of the version number -->
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+          <generateGitPropertiesFile>false
+          </generateGitPropertiesFile><!-- somehow necessary. otherwise the variables are not available in the pom -->
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>fabric8-maven-plugin</artifactId>
+        <version>4.2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>resource</goal>
+              <goal>build</goal>
+              <goal>push</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>push-image</id>
+            <phase>install</phase>
+            <goals>
+              <goal>push</goal>
+              <!--<goal>apply</goal>-->
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+          <verbose>true</verbose>
+          <registry>${docker.registry}</registry>
+          <images>
+            <image>
+              <name>${docker.registry}/${docker.image}</name>
+              <alias>webapp</alias>
+              <build>
+                <dockerFile>Dockerfile</dockerFile>
+                <tags>
+                  <tag>latest</tag>
+                  <tag>${version.number}</tag>
+                </tags>
+              </build>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>profile-edu</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>env</name>
+          <value>edu</value>
+        </property>
+      </activation>
+      <properties>
+        <docker.registry>docker.io</docker.registry>
+        <version.number>${user.name}.${git.commit.id.abbrev}</version.number>
+        <kube.context>kubernetes</kube.context>
+      </properties>
+    </profile>
+  </profiles>
+</project>
