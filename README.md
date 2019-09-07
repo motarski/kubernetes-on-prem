@@ -1,4 +1,5 @@
 # Host used MacOs Mojave v10.14.6
+###### with Oracle VirtualBox 6.0 and docker desktop Community v2.1.0.2 stable
 ---
 # Power Off - On Vagrant gracefully
 ```
@@ -71,6 +72,7 @@ $ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s h
 
 ## Deploy Cluster nodes and LoadBalancer
 ```
+$ cd infrastructure
 $ vagrant up
 ```
 - Master  Node specs: 2Cpu, 1Gb Ram, IP: 172.42.42.100
@@ -119,9 +121,10 @@ Add Bellow lines and save / exit
 # LoadBalancer for K8s Bare Metal
 172.42.42.10 barjaktarov.local
 ```
-## Setup Ingress controller as daemonset
+## Provision kubernetes ingress and persistent volumes
 ```
-$ ./ingress_setup.sh
+# cd infrastructure
+$ ./infra_setup.sh
 ```
 
 The infrastructure, Loadbalancer and Networking of the cluster is now setup. Configuration used for HAProxy box can also be found in /haproxy directory separately.

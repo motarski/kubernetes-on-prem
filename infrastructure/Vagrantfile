@@ -10,11 +10,12 @@ Vagrant.configure(2) do |config|
     nfs.vm.hostname = "storage.edu.local"
     nfs.vm.network "private_network", ip: "172.42.42.20"
     nfs.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--audioin", "off"]
       v.name = "storage"
       v.memory = 256
       v.cpus = 1
     end
-    nfs.vm.provision "shell", path: "storage.sh"
+    nfs.vm.provision "shell", path: "provisioning/storage.sh"
   end
 
   # HAProxy as a Load Balancer for Bare Metal K8s Cluster
@@ -23,11 +24,12 @@ Vagrant.configure(2) do |config|
     haproxy.vm.hostname = "haproxy.edu.local"
     haproxy.vm.network "private_network", ip: "172.42.42.10"
     haproxy.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--audioin", "off"]
       v.name = "haproxy"
       v.memory = 256
       v.cpus = 1
     end
-    haproxy.vm.provision "shell", path: "haproxy.sh"
+    haproxy.vm.provision "shell", path: "provisioning/haproxy.sh"
   end
 
   # Kubernetes Master Server
@@ -36,12 +38,13 @@ Vagrant.configure(2) do |config|
     kmaster.vm.hostname = "kmaster.edu.local"
     kmaster.vm.network "private_network", ip: "172.42.42.100"
     kmaster.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--audioin", "off"]
       v.name = "kmaster"
       v.memory = 1024
       v.cpus = 2
     end
-    kmaster.vm.provision "shell", path: "bootstrap.sh"
-    kmaster.vm.provision "shell", path: "bootstrap_kmaster.sh"
+    kmaster.vm.provision "shell", path: "provisioning/bootstrap.sh"
+    kmaster.vm.provision "shell", path: "provisioning/bootstrap_kmaster.sh"
   end
 
   NodeCount = 2
@@ -53,12 +56,13 @@ Vagrant.configure(2) do |config|
       workernode.vm.hostname = "kworker#{i}.edu.local"
       workernode.vm.network "private_network", ip: "172.42.42.10#{i}"
       workernode.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--audioin", "off"]
         v.name = "kworker#{i}"
         v.memory = 1024
         v.cpus = 1
       end
-      workernode.vm.provision "shell", path: "bootstrap.sh"
-      workernode.vm.provision "shell", path: "bootstrap_kworker.sh"
+      workernode.vm.provision "shell", path: "provisioning/bootstrap.sh"
+      workernode.vm.provision "shell", path: "provisioning/bootstrap_kworker.sh"
     end
   end
 
