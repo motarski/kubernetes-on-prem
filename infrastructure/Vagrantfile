@@ -1,4 +1,4 @@
-# Provision Kubernetes cluster and Load Balancer for educational presentation
+# Provision Kubernetes cluster, Load Balancer and NFS Server
 
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
