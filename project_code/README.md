@@ -25,4 +25,4 @@ It will deploy:
 - Deployment
 - Service
 
-Accesible from browser host via url `http://barjaktarov.local`
+Accessible from browser host via url `http://barjaktarov.local`

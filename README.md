@@ -16,7 +16,7 @@ $ vagrant destroy
 
 - Homebrew Package manager
 - Docker Desktop for Mac
-- Oracle Virtualbox
+- Oracle VirtualBox
 - HashiCorp Vagrant
 - Maven
 - Kubernetes Client
@@ -31,7 +31,7 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 ```
 [Installation info ](https://docs.docker.com/docker-for-mac/install/)
 
-Create user on dockerhub later needed for generating kubernetes secret
+Create user on docker hub later needed for generating kubernetes secret
 ```
 
 ### Login to your Docker registry from Mac host
@@ -106,7 +106,7 @@ $ vi ~/.kube/config
 $ kubectl cluster-info
 $ kubectl get nodes -o wide
 ```
-### Bash Completeion for kubernetes Client
+### Bash Completion for kubernetes client
 ```
 $ brew install bash-completion@2
 $ echo 'source <(kubectl completion bash)' >>~/.bashrc
@@ -122,8 +122,9 @@ Add Bellow lines and save / exit
 172.42.42.10 barjaktarov.local
 ```
 ## Provision kubernetes ingress and persistent volumes
+Make sure that you are still in the infrastructure directory
+
 ```
-# cd infrastructure
 $ ./infra_setup.sh
 ```
 
@@ -136,4 +137,8 @@ Two types of storage exist available to the Cluster
 - Storage type: db-data (to be used for database)
 - Storage type: www-data (to be used for the static files)
 
-Persistan volumes and claims for both storage types are included in `infra_setup.sh` script and they will be provisioned during infrastrucutre setup
+Persistent volumes and claims for both storage types are included in `infra_setup.sh` script and they will be provisioned during infrastructure setup
+
+## How do I use the cluster for deploying the application?
+
+Check the documentation under project_code directory.
