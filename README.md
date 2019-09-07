@@ -1,5 +1,5 @@
 # Host used MacOs Mojave v10.14.6
-###### with Oracle VirtualBox 6.0 and docker desktop Community v2.1.0.2 stable
+###### with Oracle VirtualBox 6.0.10 and docker desktop community v2.1.0.2
 ---
 # Power Off - On Vagrant gracefully
 ```
