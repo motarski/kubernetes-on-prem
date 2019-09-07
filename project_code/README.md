@@ -6,8 +6,14 @@ Lifecycle of the project is going to be managed by maven end to end, from commit
 
 Directory project_code consists of current structure
 
-- pom.xml ``Main project object model``
-- src `Directory where source code and kubernetes deployment will be stored`
+* project_code
+   * -- src
+      * -- main
+       * -- docker ``# -- Contains files for building docker images``
+       * -- fabric8 ``# -- Contains kubernetes contracts``
+* pom.xml ``# -- Project Object model``
+* README.md ``# -- Documentation (This file)``
+
 
 ###### Kubernetes deployment strategy set to rollingUpdate
 
