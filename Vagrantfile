@@ -4,6 +4,19 @@ ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 
 Vagrant.configure(2) do |config|
 
+  # NFS Server as an actor of 'Cloud' storage
+  config.vm.define "nfs" do |nfs|
+    nfs.vm.box = "centos/7"
+    nfs.vm.hostname = "storage.edu.local"
+    nfs.vm.network "private_network", ip: "172.42.42.20"
+    nfs.vm.provider "virtualbox" do |v|
+      v.name = "storage"
+      v.memory = 256
+      v.cpus = 1
+    end
+    nfs.vm.provision "shell", path: "storage.sh"
+  end
+
   # HAProxy as a Load Balancer for Bare Metal K8s Cluster
   config.vm.define "haproxy" do |haproxy|
     haproxy.vm.box = "centos/7"

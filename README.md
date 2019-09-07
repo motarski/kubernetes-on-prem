@@ -20,6 +20,7 @@ $ vagrant destroy
 - Maven
 - Kubernetes Client
 - HAProxy
+- NFS Server
 
 ## Install Homebrew Package manager
 ```
@@ -72,10 +73,11 @@ $ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s h
 ```
 $ vagrant up
 ```
-- Master  Node specs: 2Cpu Core, 1Gb Ram
-- Worker1 Node specs: 1Cpu Core, 1Gb Ram
-- Worker2 Node specs: 1Cpu Core, 1Gb Ram
-- HAProxy Node specs: 1Cpu Core, 512 Mb Ram
+- Master  Node specs: 2Cpu, 1Gb Ram, IP: 172.42.42.100
+- Worker1 Node specs: 1Cpu, 1Gb Ram, IP: 172.42.42.101
+- Worker2 Node specs: 1Cpu, 1Gb Ram, IP: 172.42.42.102
+- HAProxy Node specs: 1Cpu, 256 Mb Ram, IP: 172.42.42.10
+- Storage Node specs: 1Cpu, 256 Mb Ram, IP: 172.42.42.20
 
 ### Copy kube config file from master to host to be able to access kubernetes api from host
 ```
@@ -125,5 +127,10 @@ $ ./ingress_setup.sh
 The infrastructure, Loadbalancer and Networking of the cluster is now setup. Configuration used for HAProxy box can also be found in /haproxy directory separately.
 
 ## Cluster Logical structure and labels
-- Kworker1 labels: disktype=SSD (To be used for database)
-- Kworker2 labels: disktype=shared (Slower storage for static objects like web hosting)
+
+Two types of storage exist available to the Cluster
+
+- Storage type: db-data (to be used for database)
+- Storage type: www-data (to be used for the static files)
+
+Persistan volumes and claims for both storage types are included in `infra_setup.sh` script and they will be provisioned during infrastrucutre setup

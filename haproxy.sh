@@ -7,6 +7,7 @@ cat >>/etc/hosts<<EOF
 172.42.42.101 kworker1.edu.local kworker1
 172.42.42.102 kworker2.edu.local kworker2
 172.42.42.10 harpoxy.edu.local haproxy
+172.42.42.20 storage.edu.local storage
 EOF
 
 # Disable SELinux
