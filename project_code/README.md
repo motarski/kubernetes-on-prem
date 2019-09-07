@@ -12,9 +12,10 @@ Directory project_code consists of current structure
 ###### Kubernetes deployment strategy set to rollingUpdate
 
 
-### To setup init web app via maven
+### To deploy init web app via maven
 ```
-# mvn clean install -Denv=edu
+$ cd project_code
+$ mvn clean install -Denv=edu
 ```
 
 NOTE: Currently there are no other environments defined in the maven project and `edu` environment is set to be active by default there for running just `mvn clean install` will have the same result as above
