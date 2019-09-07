@@ -15,7 +15,7 @@ Directory project_code consists of current structure
 * README.md ``# -- Documentation (This file)``
 
 
-###### Kubernetes deployment strategy set to rollingUpdate
+### Kubernetes deployment strategy set to rollingUpdate
 
 
 ### To deploy init web app via maven
