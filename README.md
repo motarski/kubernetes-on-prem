@@ -27,7 +27,7 @@ $ vagrant destroy
 ```
 $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
-## Install Docker Desktop for Mac
+## Install Docker desktop for Mac
 ```
 [Installation info ](https://docs.docker.com/docker-for-mac/install/)
 
