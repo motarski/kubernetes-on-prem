@@ -128,7 +128,7 @@ Make sure that you are still in the infrastructure directory
 $ ./infra_setup.sh
 ```
 
-The infrastructure, Load Balancing, Networking and volumes of the cluster is now setup. Custom configurations used for components that required it like HAProxy can be found in infrastructure/configs directory.
+The infrastructure, Load Balancing, Networking and volumes of the cluster is now setup. Custom configurations used for components that required it like HAProxy can be found in infrastructure/configs directory
 
 ## Cluster Logical structure and labels
 
