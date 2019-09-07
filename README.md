@@ -127,7 +127,7 @@ Add Bellow lines and save / exit
 $ ./infra_setup.sh
 ```
 
-The infrastructure, Loadbalancer and Networking of the cluster is now setup. Configuration used for HAProxy box can also be found in /haproxy directory separately.
+The infrastructure, Load Balancing, Networking and volumes of the cluster is now setup. Custom configurations used for components that required it like HAProxy can be found in infrastructure/configs directory.
 
 ## Cluster Logical structure and labels
 
