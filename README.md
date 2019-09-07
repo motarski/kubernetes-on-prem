@@ -141,4 +141,4 @@ Persistent volumes and claims for both storage types are included in `infra_setu
 
 ## How do I use the cluster for deploying the application?
 
-Check the documentation under project_code directory.
+Check the documentation under project_code directory
