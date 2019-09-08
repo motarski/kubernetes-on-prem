@@ -8,8 +8,8 @@ spec:
   capacity:
     storage: 5Gi
   accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Recycle
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   nfs:
     server: storage.edu.local
     path: /www-data
