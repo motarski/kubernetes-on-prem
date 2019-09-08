@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ${project.artifactId}
+  name: wordpress
 spec:
   rules:
-  - host: ${loadbalancer.url}
-    http:
-      paths:
-      - backend:
-          serviceName: ${project.artifactId}
-          servicePort: 80
+    - host: barjaktarov.local
+      http:
+        paths:
+          - backend:
+              serviceName: wordpress
+              servicePort: 80

@@ -1,27 +1,79 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: wordpress-mysql
   labels:
-    run: ${project.artifactId}
-  name: ${project.artifactId}
+    app: wordpress
 spec:
-  replicas: 1
-  revisionHistoryLimit: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  minReadySeconds: 4
   selector:
     matchLabels:
-      run: ${project.artifactId}
+      app: wordpress
+      tier: mysql
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
-        run: ${project.artifactId}
+        app: wordpress
+        tier: mysql
     spec:
       containers:
-      - image: ${docker.image}:${version.number}
-        imagePullPolicy: Always
-        name: ${project.artifactId}
+        - image: mysql:5.6
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc-claim
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: frontend
+    spec:
+      containers:
+        - image: wordpress:4.8-apache
+          name: wordpress
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: wordpress-mysql
+            - name: WORDPRESS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password
+          ports:
+            - containerPort: 80
+              name: wordpress
+          volumeMounts:
+            - name: wordpress-persistent-storage
+              mountPath: /var/www/html
+      volumes:
+        - name: wordpress-persistent-storage
+          persistentVolumeClaim:
+            claimName: www-pvc-claim

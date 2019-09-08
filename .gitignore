@@ -1,4 +1,5 @@
 **.vagrant
 **target/
+**.idea
 **infrastructure/.vagrant*
 **project_code/target*

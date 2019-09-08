@@ -38,9 +38,10 @@ mkdir /www-data
 mkdir /db-data
 chmod 777 /www-data
 chmod 777 /db-data
+chown -R nobody:nobody /www-data /db-data
 cat >/etc/exports<<EOF
-/www-data 172.42.42.0/24 (rw,sync,no_root_squash)
-/db-data 172.42.42.0/24 (rw,sync,no_root_squash)
+/db-data *(rw,sync,no_subtree_check,no_root_squash,insecure)
+/www-data *(rw,sync,no_subtree_check,no_root_squash,insecure)
 EOF
 exportfs -r
 systemctl enable nfs

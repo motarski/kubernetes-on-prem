@@ -1,15 +1,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${project.artifactId}
-  namespace: ${kube.namespace}
+  name: wordpress-mysql
+  namespace: default
   labels:
-    app: ${project.artifactId}
+    app: wordpress
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+  selector:
+    app: wordpress
+    tier: mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: default
+  labels:
+    app: wordpress
 spec:
   type: ClusterIP
   selector:
-    app: ${project.artifactId}
+    app: wordpress
+    tier: frontend
   ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 80
+    - port: 80
+      protocol: TCP
+      targetPort: 80

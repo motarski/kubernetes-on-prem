@@ -4,7 +4,7 @@
 k8_pv_location="../k8s_objects/persistent-volumes"
 k8_location="../k8s_objects/ingress-controller"
 k8_ingress_object=(ns-and-sa.yaml default-server-secret.yaml ingress-configmap.yaml ingress-rbac.yaml ingress-controller-daemonset.yaml)
-k8_pv_object=(db-pv.yaml www-pv.yaml db-pvc.yaml www-pvc.yaml)
+k8_pv_object=(db-pv.yaml www-pv.yaml)
 
 # Deploy Ingress Controller as daemonset
 echo -e "\033[1;34mDeploying Ingress Controller ...\033[0m"

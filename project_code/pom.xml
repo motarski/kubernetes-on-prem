@@ -115,9 +115,9 @@
           <images>
             <image>
               <name>${docker.registry}/${docker.image}</name>
-              <alias>webapp</alias>
+              <alias>wordpress</alias>
               <build>
-                <dockerFile>Dockerfile</dockerFile>
+                <dockerFile>Dockerfile_www</dockerFile>
                 <tags>
                   <tag>latest</tag>
                   <tag>${version.number}</tag>
