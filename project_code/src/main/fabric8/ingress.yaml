@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: wordpress
+  namespace: default
 spec:
   rules:
     - host: barjaktarov.local
