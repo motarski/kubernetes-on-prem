@@ -57,6 +57,12 @@
               <arguments>
                 <argument>apply</argument>
                 <argument>-f</argument>
+                <argument>mysql-db.yaml</argument>
+              </arguments>
+              <executable>kubectl</executable>
+              <arguments>
+                <argument>apply</argument>
+                <argument>-f</argument>
                 <argument>${project.build.directory}/classes/META-INF/fabric8/kubernetes.yml</argument>
               </arguments>
               <successCodes>
