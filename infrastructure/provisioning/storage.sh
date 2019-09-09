@@ -34,10 +34,8 @@ echo "[TASK 7] Install, Configure and start NFS server shares"
 yum install -y nfs-utils
 systemctl start nfs-server rpcbind
 systemctl enable nfs-server rpcbind
-mkdir /www-data
-mkdir /db-data
-chmod 777 /www-data
-chmod 777 /db-data
+mkdir /www-data /db-data
+chmod -R 777 /www-data /db-data
 chown -R nobody:nobody /www-data /db-data
 cat >/etc/exports<<EOF
 /db-data *(rw,sync,no_subtree_check,no_root_squash,insecure)
