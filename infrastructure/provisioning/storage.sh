@@ -30,8 +30,7 @@ echo "[TASK 6] Set root password"
 echo "kubeadmin" | passwd --stdin root >/dev/null 2>&1
 
 # Install and configure NFS Storage shares
-echo "[TASK 7] Install, Configure and start NFS server shares"
-yum install -y nfs-utils
+echo "[TASK 7] Configure and start NFS server shares"
 systemctl start nfs-server rpcbind
 systemctl enable nfs-server rpcbind
 mkdir /www-data /db-data

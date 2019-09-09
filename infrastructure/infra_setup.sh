@@ -13,12 +13,12 @@ for kube in "${k8_ingress_object[@]}"
 done
 
 # Provision Persistent volumes and Claims
-echo -e "\n \033[1;34mProvisioining persistent volumes and claims ...\033[0m"
+echo -e "\n\033[1;34mProvisioining persistent volumes and claims ...\033[0m"
 for pv in "${k8_pv_object[@]}"
  do kubectl create -f ${k8_pv_location}/${pv}
 done
 
 # Rename context to kubernetes
-echo -e "\n \033[1;34mRename and switch context ...\033[0m"
+echo -e "\n\033[1;34mRename and switch context ...\033[0m"
 kubectl config rename-context kubernetes-admin@kubernetes kubernetes
 kubectl config use-context kubernetes
