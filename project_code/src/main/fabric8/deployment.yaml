@@ -29,6 +29,13 @@ spec:
           ports:
             - containerPort: 3306
               name: mysql
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
@@ -44,6 +51,12 @@ metadata:
   labels:
     app: wordpress
 spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: wordpress
@@ -70,6 +83,13 @@ spec:
           ports:
             - containerPort: 80
               name: wordpress
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
           volumeMounts:
             - name: wordpress-persistent-storage
               mountPath: /var/www/html
