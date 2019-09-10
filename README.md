@@ -75,7 +75,7 @@ $ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s h
 $ cd infrastructure
 $ vagrant up
 ```
-- Master  Node specs: 2Cpu, 1Gb Ram, IP: 172.42.42.100
+- Master  Node specs: 2Cpu, 2Gb Ram, IP: 172.42.42.100
 - Worker1 Node specs: 1Cpu, 1Gb Ram, IP: 172.42.42.101
 - Worker2 Node specs: 1Cpu, 1Gb Ram, IP: 172.42.42.102
 - HAProxy Node specs: 1Cpu, 256 Mb Ram, IP: 172.42.42.10
