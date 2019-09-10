@@ -121,14 +121,14 @@ Add Bellow lines and save / exit
 # LoadBalancer for K8s Bare Metal
 172.42.42.10 barjaktarov.local
 ```
-## Provision kubernetes ingress and persistent volumes
+## Setup ingress controller and kubernetes cluster
 Make sure that you are still in the infrastructure directory
 
 ```
-$ ./infra_setup.sh
+$ ./ingress_setup.sh
 ```
 
-The infrastructure, Load Balancing, Networking and volumes of the cluster is now setup. Custom configurations used for components that required it like HAProxy can be found in infrastructure/configs directory
+The core infrastructure components Load Balancing, Networking is now setup. Custom configurations used for components that required it like HAProxy can be found in infrastructure/configs directory. Next is to deploy application and its components. More info at the project_code directory documentation
 
 ## Cluster Logical structure and labels
 
@@ -137,8 +137,11 @@ Two types of storage exist available to the Cluster
 - Storage type: db-data (to be used for database)
 - Storage type: www-data (to be used for the static files)
 
-Persistent volumes and claims for both storage types are included in `infra_setup.sh` script and they will be provisioned during infrastructure setup
+Persistent volumes and claims for both storage types are included in `deployment.sh` script located in project_code directory which is responsible for deployng the application stack
 
 ## How do I use the cluster for deploying the application?
 
-Check the documentation under project_code directory
+```
+$ ./deployment.sh --deploy
+```
+Check the documentation under project_code directory for details

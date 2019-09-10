@@ -2,5 +2,5 @@
 
 ```
 $ vagrant up
-$ ./infra_setup
+$ ./ingress_setup
 ```

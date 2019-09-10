@@ -1,5 +1,25 @@
-# The code for main project
+# Deployment via Bash script (stable)
 ---
+
+Deployment of Wordpress application with Mysql Database setup on the persistant volumes
+
+```
+$ cd project_code
+$ ./deployment.sh --deploy
+```
+
+Tear down the whole application together with persistent volumes and volume claims
+
+```
+$ cd project_code
+$ ./deployment.sh --teardown
+```
+
+For Usage of the deployment script type `./deployment.sh`
+
+---
+
+# Deployment via Maven (in progress)
 Lifecycle of the project is going to be managed by maven end to end, from commit to deployment on the kubernetes cluster (provisioned with the vagrant scripts)
 
 ### Simple Nginx web server introduced to project_code
