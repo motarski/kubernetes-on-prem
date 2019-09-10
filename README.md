@@ -121,7 +121,7 @@ Add Bellow lines and save / exit
 # LoadBalancer for K8s Bare Metal
 172.42.42.10 barjaktarov.local
 ```
-## Setup ingress controller and kubernetes cluster
+## Setup ingress controller and rename kubernetes context
 Make sure that you are still in the infrastructure directory
 
 ```
@@ -142,6 +142,7 @@ Persistent volumes and claims for both storage types are included in `deployment
 ## How do I use the cluster for deploying the application?
 
 ```
+$ cd project_code
 $ ./deployment.sh --deploy
 ```
 Check the documentation under project_code directory for details
