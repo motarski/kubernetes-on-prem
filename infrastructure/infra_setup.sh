@@ -12,8 +12,8 @@ for kube in "${k8_ingress_object[@]}"
  do kubectl create -f ${k8_location}/${kube}
 done
 
-# Provision Persistent volumes and Claims
-echo -e "\n\033[1;34mProvisioining persistent volumes and claims ...\033[0m"
+# Provision Persistent volumes
+echo -e "\n\033[1;34mProvisioining persistent volumes ...\033[0m"
 for pv in "${k8_pv_object[@]}"
  do kubectl create -f ${k8_pv_location}/${pv}
 done
