@@ -10,7 +10,7 @@ Components included:
 
 ### Hosts supported
 
-- **MacOs Mojave `11.14.6`** with Oracle VirtualBox `6.0.10`, Vagrant `2.2.5`
+- **MacOs Mojave `10.14.6`** with Oracle VirtualBox `6.0.10`, Vagrant `2.2.5`
 - **Ubuntu Linux `18.04.3 LTS`** with Oracle VirtualBox `6.0.12`, Vagrant `2.2.5`
 
 ### Prerequisites (Mac & Linux)
