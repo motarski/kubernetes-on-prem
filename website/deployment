@@ -3,7 +3,7 @@
 # Declare vars
 readonly services=(wordpress wordpress-mysql)
 readonly pvcs=(mysql-pvc-claim www-pvc-claim)
-readonly k8_pv_location="../components/persistent-volumes"
+readonly k8s_pv_location="../components/persistent-volumes"
 readonly components=(secret.yaml service.yaml pvc.yaml ingress.yaml deployment.yaml)
 
 function info() {
