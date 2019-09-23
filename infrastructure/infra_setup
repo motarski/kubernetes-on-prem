@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# Globally declared vars
+readonly k8_components="../components"
+readonly k8_storageclass_objects=(class.yaml deployment.yaml rbac.yaml)
+readonly k8_metrics_objects=(aggregated-metrics-reader.yaml auth-reader.yaml metrics-server-deployment.yaml resource-reader.yaml auth-delegator.yaml metrics-apiservice.yaml metrics-server-service.yaml)
+readonly k8_ingress_objects=(ns-and-sa.yaml default-server-secret.yaml ingress-configmap.yaml ingress-rbac.yaml ingress-controller-daemonset.yaml ingress-svc.yaml)
+
+function check_dependecies() {
+command -v sshpass >/dev/null 2>&1 || {
+ echo >&2 "sshpass is required but it's not installed. Aborting.";
+exit 1;
+ }
+command -v kubectl >/dev/null 2>&1 || {
+ echo >&2 "kubectl is required but it's not installed. Aborting.";
+exit 1;
+ }
+}
+function get_kube_config() {
+local kubecfg="${HOME}/.kube/config"
+[ -f ${kubecfg} ] && {
+ echo -e "\033[1;34mMaking backup of your kube config...\033[0m";
+cp ${kubecfg} ${kubecfg}.on-prem.bkp;
+}
+local port=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
+sshpass -p "kubeadmin" scp -P ${port} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${kubecfg}
+}
+function verify_if_cluster_is_running() {
+local is_running=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
+[[ ${is_running} != "is running" ]] && {
+ echo "Something went wrong, cluster is not running. Aborting.";
+exit 1;
+ }
+}
+function configure_ingress() {
+echo -e "\033[1;34mDeploying Ingress Controller ...\033[0m"
+for kube in "${k8_ingress_objects[@]}"
+ do kubectl create -f ${k8_components}/ingress-controller/${kube}
+done
+}
+function configure_nfs_provisioner() {
+echo -e "\033[1;34mDeploying Storage class and Dynamic NFS Provisioner ...\033[0m"
+for kube in "${k8_storageclass_objects[@]}"
+ do kubectl create -f ${k8_components}/nfs-provisioner/${kube}
+done
+}
+function configure_metrics_server() {
+echo -e "\033[1;34mDeploying Metrics Server ...\033[0m"
+for kube in "${k8_metrics_objects[@]}"
+ do kubectl create -f ${k8_components}/metrics-server/${kube}
+done
+}
+function configure_tiller() {
+echo -e "\033[1;34mInitializing Tiller for Helm ...\033[0m"
+kubectl create -f ${k8_components}/helm/helm-sa.yaml
+helm init --service-account tiller
+}
+function rename_context() {
+echo -e "\n\033[1;34mRename and switch context ...\033[0m"
+kubectl config rename-context kubernetes-admin@kubernetes kubernetes
+kubectl config use-context kubernetes
+}
+
+function main() {
+  check_dependecies
+  get_kube_config
+  verify_if_cluster_is_running
+  configure_ingress
+  configure_nfs_provisioner
+  configure_metrics_server
+  configure_tiller
+  rename_context
+}
+
+main

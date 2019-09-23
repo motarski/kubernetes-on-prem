@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Include vars
+source provisioning/vars.sh
+
+function check_sudo() {
+[[ $UID != 0 ]] && {
+ echo "The script wants to make changes to the host. It requires sudo to run ...";
+ echo "USAGE: sudo $0 $*";
+ exit 1;
+ }
+}
+function configure_dns() {
+sed -i '' "/${FQDN}/d" /etc/hosts
+echo "172.42.42.10 ${FQDN}" >> /etc/hosts
+(($? != 0)) && {
+  echo "Something went wrong when writing to /etc/hosts. Aborting";
+  exit 1;
+  }
+echo "DNS Configured. Cluster is ready!"
+}
+
+function main() {
+  check_sudo
+  configure_dns
+}
+
+main

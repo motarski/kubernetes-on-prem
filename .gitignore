@@ -1,0 +1,5 @@
+**.vagrant
+**target/
+**.idea
+**infrastructure/.vagrant*
+**website/target*
