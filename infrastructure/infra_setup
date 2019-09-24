@@ -18,7 +18,7 @@ exit 1;
 }
 function get_kube_config() {
 local kubecfg="${HOME}/.kube/config"
-[ -f ${kubecfg} ] && {
+[[ -f ${kubecfg} ]] && {
  echo -e "\033[1;34mMaking backup of your kube config...\033[0m";
 cp ${kubecfg} ${kubecfg}.on-prem.bkp;
 }
