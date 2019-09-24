@@ -12,7 +12,7 @@ function check_sudo() {
  }
 }
 function configure_dns() {
-[[ $OS_FAMILY =~ "Darwin" ]] && sed -i '' "/${FQDN}/d" /etc/hosts || sed -i "/${FQDN}/d" /etc/hosts
+[[ $OS_FAMILY =~ ^Darwin ]] && sed -i '' "/${FQDN}/d" /etc/hosts || sed -i "/${FQDN}/d" /etc/hosts
 echo "172.42.42.10 ${FQDN}" >> /etc/hosts
 (($? != 0)) && {
   echo "Something went wrong when writing to /etc/hosts. Aborting";
