@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Include vars
-readonly OS_FAMILY=$(uname)
 source provisioning/vars.sh
 
 function check_sudo() {
@@ -12,6 +11,7 @@ function check_sudo() {
  }
 }
 function configure_dns() {
+local OS_FAMILY=$(uname)
 [[ $OS_FAMILY =~ ^Darwin ]] && sed -i '' "/${FQDN}/d" /etc/hosts || sed -i "/${FQDN}/d" /etc/hosts
 echo "172.42.42.10 ${FQDN}" >> /etc/hosts
 (($? != 0)) && {
