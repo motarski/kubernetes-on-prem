@@ -23,8 +23,8 @@ local PORT=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -
 sshpass -p "kubeadmin" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBECFG}
 }
 function verify_if_cluster_is_running() {
-local is_running=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
-[[ ${is_running} != "is running" ]] && {
+local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
+[[ ${IS_RUNNING} != "is running" ]] && {
  echo "Something went wrong, cluster is not running. Aborting.";
 exit 1;
  }
