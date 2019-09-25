@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Include vars
+source /vagrant/provisioning/vars.sh
+
 # Initialize Kubernetes
 echo "[TASK 1] Initialize Kubernetes Cluster"
-kubeadm init --apiserver-advertise-address=172.42.42.100 --pod-network-cidr=10.244.0.0/16 --kubernetes-version=${K8S_VER} >> /root/kubeinit.log 2>/dev/null
+kubeadm init --apiserver-advertise-address=172.42.42.100 --pod-network-cidr=10.244.0.0/16 --kubernetes-version=${KUBERNETES_VERSION} >> /root/kubeinit.log 2>/dev/null
 
 # Copy Kube admin config
 echo "[TASK 2] Copy kube admin config to Vagrant user .kube directory"
