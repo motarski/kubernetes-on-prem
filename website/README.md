@@ -22,7 +22,7 @@ For Usage of the deployment script type `./deployment`
 
 Accessible from browser host via url `http://barjaktarov.local`
 
-The test of functionality web application is configured with the default DNS record for ingress host rule. If you changed the default `FQDN` in `vars.sh` when provisioning the cluster then you need to update the ingress object manually as well.
+The test of functionality web application is configured to use same DNS record for ingress as host rule. That means if you changed the default `FQDN` in `vars.sh` when provisioning the cluster your website ingress will be automatically updated to use that record.
 
 Enjoy your On-Prem Kubernetes cluster
 
