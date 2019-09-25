@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Include vars
+# Global vars and includes
+readonly OS_FAMILY=$(uname)
 source provisioning/vars.sh
 
 function check_sudo() {
@@ -11,7 +12,6 @@ function check_sudo() {
  }
 }
 function configure_dns() {
-local OS_FAMILY=$(uname)
 [[ $OS_FAMILY =~ ^Darwin ]] && sed -i '' "/${FQDN}/d" /etc/hosts || sed -i "/${FQDN}/d" /etc/hosts
 echo "172.42.42.10 ${FQDN}" >> /etc/hosts
 (($? != 0)) && {
@@ -20,10 +20,14 @@ echo "172.42.42.10 ${FQDN}" >> /etc/hosts
   }
 echo "DNS Configured. Cluster is ready!"
 }
-
+function configure_website_ingress() {
+local WEBSITE_KUBE="../website/kubes/ingress.yaml"
+[[ ${OS_FAMILY} =~ ^Darwin ]] && sed -i '' "s/configure.me/${FQDN}/" ${WEBSITE_KUBE} || sed -i "s/configure.me/${FQDN}/" ${WEBSITE_KUBE}
+}
 function main() {
   check_sudo
   configure_dns
+  configure_website_ingress
 }
 
 main
