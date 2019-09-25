@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Globally declared vars
-readonly k8s_components="../components"
-readonly k8s_storageclass_objects=(class.yaml deployment.yaml rbac.yaml)
-readonly k8s_metrics_objects=(aggregated-metrics-reader.yaml auth-reader.yaml metrics-server-deployment.yaml resource-reader.yaml auth-delegator.yaml metrics-apiservice.yaml metrics-server-service.yaml)
-readonly k8s_ingress_objects=(ns-and-sa.yaml default-server-secret.yaml ingress-configmap.yaml ingress-rbac.yaml ingress-controller-daemonset.yaml ingress-svc.yaml)
+readonly K8S_COMPONENTS="../components"
+readonly K8S_STORAGECLASS_OBJECTS=(class.yaml deployment.yaml rbac.yaml)
+readonly K8S_METRICS_OBJECTS=(aggregated-metrics-reader.yaml auth-reader.yaml metrics-server-deployment.yaml resource-reader.yaml auth-delegator.yaml metrics-apiservice.yaml metrics-server-service.yaml)
+readonly K8S_INGRESS_OBJECTS=(ns-and-sa.yaml default-server-secret.yaml ingress-configmap.yaml ingress-rbac.yaml ingress-controller-daemonset.yaml ingress-svc.yaml)
 
 function check_dependecies() {
 command -v sshpass >/dev/null 2>&1 || {
@@ -17,13 +17,13 @@ exit 1;
  }
 }
 function get_kube_config() {
-local kubecfg="${HOME}/.kube/config"
-[[ -f ${kubecfg} ]] && {
- echo -e "\033[1;34mMaking backup of your kube config...\033[0m";
-cp ${kubecfg} ${kubecfg}.on-prem.bkp;
+local KUBECFG="${HOME}/.kube/config"
+[[ -f ${KUBECFG} ]] && {
+ echo -e "\033[1;34mMaking backup of your KUBE config...\033[0m";
+cp ${KUBECFG} ${KUBECFG}.on-prem.bkp;
 }
-local port=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
-sshpass -p "kubeadmin" scp -P ${port} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${kubecfg}
+local PORT=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
+sshpass -p "kubeadmin" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBECFG}
 }
 function verify_if_cluster_is_running() {
 local is_running=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
@@ -34,25 +34,25 @@ exit 1;
 }
 function configure_ingress() {
 echo -e "\033[1;34mDeploying Ingress Controller ...\033[0m"
-for kube in "${k8s_ingress_objects[@]}"
- do kubectl create -f ${k8s_components}/ingress-controller/${kube}
+for KUBE in "${K8S_INGRESS_OBJECTS[@]}"
+ do kubectl create -f ${K8S_COMPONENTS}/ingress-controller/${KUBE}
 done
 }
 function configure_nfs_provisioner() {
 echo -e "\033[1;34mDeploying Storage class and Dynamic NFS Provisioner ...\033[0m"
-for kube in "${k8s_storageclass_objects[@]}"
- do kubectl create -f ${k8s_components}/nfs-provisioner/${kube}
+for KUBE in "${K8S_STORAGECLASS_OBJECTS[@]}"
+ do kubectl create -f ${K8S_COMPONENTS}/nfs-provisioner/${KUBE}
 done
 }
 function configure_metrics_server() {
 echo -e "\033[1;34mDeploying Metrics Server ...\033[0m"
-for kube in "${k8s_metrics_objects[@]}"
- do kubectl create -f ${k8s_components}/metrics-server/${kube}
+for KUBE in "${K8S_METRICS_OBJECTS[@]}"
+ do kubectl create -f ${K8S_COMPONENTS}/metrics-server/${KUBE}
 done
 }
 function configure_tiller() {
 echo -e "\033[1;34mInitializing Tiller for Helm ...\033[0m"
-kubectl create -f ${k8s_components}/helm/helm-sa.yaml
+kubectl create -f ${K8S_COMPONENTS}/helm/helm-sa.yaml
 helm init --service-account tiller
 }
 function rename_context() {

@@ -1,41 +1,41 @@
 #!/bin/bash
 
 # Declare vars
-readonly services=(wordpress wordpress-mysql)
-readonly pvcs=(mysql-pvc-claim www-pvc-claim)
-readonly k8s_pv_location="../components/persistent-volumes"
-readonly components=(secret.yaml service.yaml pvc.yaml ingress.yaml deployment.yaml)
+readonly SERVICES=(wordpress wordpress-mysql)
+readonly PVCS=(mysql-pvc-claim www-pvc-claim)
+readonly K8S_PV_LOCATION="../COMPONENTS/persistent-volumes"
+readonly COMPONENTS=(secret.yaml service.yaml pvc.yaml ingress.yaml deployment.yaml)
 
 function info() {
 echo -e "\nWhat do you want me to do, Tear down or Deploy?\n"
-echo -e "USAGE: \033[1;33m./deployment --teardown\033[0m    # To tear down the whole thing (deployment, services and ingress)"
+echo -e "USAGE: \033[1;33m./deployment --teardown\033[0m    # To tear down the whole thing (deployment, SERVICES and ingress)"
 echo -e "       \033[1;33m./deployment --deploy\033[0m      # To deploy application the whole thing\n"
 }
 
 function tear_down() {
-local start=`date +%s`
+local START=`date +%s`
 echo -e "\n\033[1;34mTearing Down everything ...\033[0m\n"
-for kube in "${services[@]}"
- do kubectl delete svc ${kube} --now
-     kubectl delete deployment ${kube} --now
+for KUBE in "${SERVICES[@]}"
+ do kubectl delete svc ${KUBE} --now
+     kubectl delete deployment ${KUBE} --now
 done
 kubectl delete ingress wordpress --now
 kubectl delete secret mysql-pass --now
-for pvc in "${pvcs[@]}"
- do kubectl delete pvc ${pvc} --now
+for PVC in "${PVCS[@]}"
+ do kubectl delete pvc ${PVC} --now
 done
-local end=`date +%s`
-echo -e "\n\033[1;37mDONE! Time spent on Tearing Down everything was $((end-start)) second(s)\n"
+local END=`date +%s`
+echo -e "\n\033[1;37mDONE! Time spent on Tearing Down everything was $((END-START)) second(s)\n"
 }
 
 function deploy() {
-local start=`date +%s`
+local START=`date +%s`
 echo -e "\n\033[1;34mDeploying everything ...\033[0m\n"
-for object in "${components[@]}"
- do kubectl create -f kubes/${object}
+for OBJECT in "${COMPONENTS[@]}"
+ do kubectl create -f kubes/${OBJECT}
 done
-local end=`date +%s`
-echo -e "\n\033[1;37mDONE! Time spent on deploying everything was $((end-start)) second(s)\n"
+local END=`date +%s`
+echo -e "\n\033[1;37mDONE! Time spent on deploying everything was $((END-START)) second(s)\n"
 }
 
 function main() {
