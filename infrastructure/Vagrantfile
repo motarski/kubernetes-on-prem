@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
     nfs.vm.hostname = "storage.barjaktarov.local"
     nfs.vm.network "private_network", ip: "172.42.42.20"
     nfs.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--audioin", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
       v.name = "storage"
       v.memory = 256
       v.cpus = 1
@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
     haproxy.vm.hostname = "Loadbalancer.barjaktarov.local"
     haproxy.vm.network "private_network", ip: "172.42.42.10"
     haproxy.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--audioin", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
       v.name = "loadbalancer"
       v.memory = 256
       v.cpus = 1
@@ -38,7 +38,7 @@ Vagrant.configure(2) do |config|
     master.vm.hostname = "master.barjaktarov.local"
     master.vm.network "private_network", ip: "172.42.42.100"
     master.vm.provider "virtualbox" do |v|
-      v.customize ["modifyvm", :id, "--audioin", "off"]
+      v.customize ["modifyvm", :id, "--audio", "none"]
       v.name = "master"
       v.memory = 2048
       v.cpus = 2
@@ -56,7 +56,7 @@ Vagrant.configure(2) do |config|
       workernode.vm.hostname = "node#{i}.barjaktarov.local"
       workernode.vm.network "private_network", ip: "172.42.42.10#{i}"
       workernode.vm.provider "virtualbox" do |v|
-        v.customize ["modifyvm", :id, "--audioin", "off"]
+        v.customize ["modifyvm", :id, "--audio", "none"]
         v.name = "node#{i}"
         v.memory = 1500
         v.cpus = 1
