@@ -1,4 +1,4 @@
-# Kubernetes On-Premise Complete Solution
+# Kubernetes On-Prem cluster with Kong API Gateway
 Components included:
 - Kubernetes `v1.15.4`
 - Kong API Gateway
