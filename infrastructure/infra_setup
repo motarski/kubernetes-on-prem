@@ -4,6 +4,10 @@
 readonly K8S_COMPONENTS="../components"
 
 function check_dependecies() {
+command -v helm >/dev/null 2>&1 || {
+ echo >&2 "Helm client is required but it's not installed. Aborting.";
+exit 1;
+ }
 command -v sshpass >/dev/null 2>&1 || {
  echo >&2 "sshpass is required but it's not installed. Aborting.";
 exit 1;
@@ -29,12 +33,13 @@ local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3,
 exit 1;
  }
 }
-function configure_ingress() {
-local K8S_INGRESS_OBJECTS=(ns-and-sa.yaml default-server-secret.yaml ingress-configmap.yaml ingress-rbac.yaml ingress-controller-daemonset.yaml ingress-svc.yaml)
-echo -e "\033[1;34mDeploying Ingress Controller ...\033[0m"
-for KUBE in "${K8S_INGRESS_OBJECTS[@]}"
- do kubectl create -f ${K8S_COMPONENTS}/ingress-controller/${KUBE}
-done
+function configure_kong() {
+helm del --purge on-prem > /dev/null 2>&1
+helm install ${K8S_COMPONENTS}/kong --set ingressController.enabled=true --set postgresql.enabled=false --set env.database=off --name on-prem
+(($? != 0)) && {
+  echo "Kong didn't install with success... Exiting";
+  exit 1;
+  }
 }
 function configure_nfs_provisioner() {
 local K8S_STORAGECLASS_OBJECTS=(class.yaml deployment.yaml rbac.yaml)
@@ -65,10 +70,10 @@ function main() {
   check_dependecies
   get_kube_config
   verify_if_cluster_is_running
-  configure_ingress
   configure_nfs_provisioner
   configure_metrics_server
   configure_tiller
+  configure_kong
   rename_context
 }
 

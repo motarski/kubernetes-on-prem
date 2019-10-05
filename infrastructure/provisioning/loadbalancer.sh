@@ -71,8 +71,8 @@ frontend http_front
 
 backend http_back
   balance roundrobin
-  server kube node1:30336
-  server kube node2:30336
+  server kube node1:32080
+  server kube node2:32080
 EOF
 systemctl enable haproxy.service
 systemctl start haproxy.service

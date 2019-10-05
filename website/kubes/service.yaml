@@ -21,7 +21,7 @@ metadata:
   labels:
     app: wordpress
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: wordpress
     tier: frontend
@@ -29,4 +29,3 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 80
-      nodePort: 30336

@@ -1,7 +1,7 @@
 # Kubernetes On-Premise Complete Solution
 Components included:
 - Kubernetes `v1.15.4`
-- Nginx Ingress controller
+- Kong API Gateway
 - Dynamic NFS Persistent volume provisioner
 - HAProxy LoadBalancer
 - Metrics Server
