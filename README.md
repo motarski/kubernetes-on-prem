@@ -124,3 +124,7 @@ By changing the value of `KUBERNETES_VERSION` variable in `vars.sh` located at `
 ### How can I change the default DNS record barjaktarov.local?
 
 By changing the value of `FQDN` variable in `vars.sh` located at `infrastructure/provisioning`.
+
+### What is next in queue for development?
+
+Plan is to move completely away from using declarative yaml to Helm charts deployment    
