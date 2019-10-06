@@ -127,4 +127,4 @@ By changing the value of `FQDN` variable in `vars.sh` located at `infrastructure
 
 ### What is next in queue for development?
 
-Plan is to move completely away from using declarative yaml to Helm charts for deployment    
+The plan is to move completely away from using declarative yaml to Helm charts for deployments
