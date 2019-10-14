@@ -72,9 +72,9 @@ function main() {
   get_kube_config
   verify_if_cluster_is_running
   configure_nfs_provisioner
-  #configure_metrics_server
+  configure_metrics_server
   configure_tiller
-  #configure_kong
+  configure_kong
   rename_context
 }
 
