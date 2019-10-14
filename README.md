@@ -50,7 +50,7 @@ $ curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s h
 ### Kubernetes client latest version (Ubuntu Linux 18.04.3 LTS)
 ```
 $ curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-$ chmox +x kubectl
+$ chmod +x kubectl
 $ sudo mv kubectl /usr/bin/
 ```
 
@@ -59,7 +59,7 @@ $ sudo mv kubectl /usr/bin/
 $ brew install bash-completion@2
 $ echo 'source <(kubectl completion bash)' >>~/.bashrc
 ```
-### Bash completion for kubeclt (Ubuntu Linux 18.04.3 LTS)
+### Bash completion for kubectl (Ubuntu Linux 18.04.3 LTS)
 ```
 $ sudo apt-get install bash-completion
 $ echo 'source <(kubectl completion bash)' >>~/.bashrc
@@ -75,6 +75,16 @@ brew install kubernetes-helm
 $ wget https://get.helm.sh/helm-v2.14.3-linux-amd64.tar.gz
 $ tar --extract --file=helm-v2.14.3-linux-amd64.tar.gz linux-amd64/helm
 $ sudo mv linux-amd64/helm /usr/bin/helm && rm -rf linux-amd64/helm
+```
+
+### SSH pass utility (Mac)
+```
+brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+```
+
+### SSH pass utility (Ubuntu Linux 18.04.3 LTS)
+```
+$ sudo apt-get install sshpass
 ```
 
 ## Provision the infrastructure

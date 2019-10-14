@@ -18,13 +18,14 @@ exit 1;
  }
 }
 function get_kube_config() {
-local KUBECFG="${HOME}/.kube/config"
-[[ -f ${KUBECFG} ]] && {
+local KUBE_CONFIG_DIR="${HOME}/.kube"
+[[ ! -d "${KUBE_CONFIG_DIR}" ]] && mkdir -p "${KUBE_CONFIG_DIR}"
+[[ -f ${KUBE_CONFIG_DIR}/config ]] && {
  echo -e "\033[1;34mMaking backup of your KUBE config...\033[0m";
-cp ${KUBECFG} ${KUBECFG}.on-prem.bkp;
+cp ${KUBE_CONFIG_DIR}/config ${KUBE_CONFIG_DIR}/config-on-prem.bkp;
 }
 local PORT=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
-sshpass -p "kubeadmin" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBECFG}
+sshpass -p "kubeadmin" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBE_CONFIG_DIR}/config
 }
 function verify_if_cluster_is_running() {
 local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
@@ -71,9 +72,9 @@ function main() {
   get_kube_config
   verify_if_cluster_is_running
   configure_nfs_provisioner
-  configure_metrics_server
+  #configure_metrics_server
   configure_tiller
-  configure_kong
+  #configure_kong
   rename_context
 }
 
