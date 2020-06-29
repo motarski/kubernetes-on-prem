@@ -1,16 +1,17 @@
 #!/bin/bash
+source ../infrastructure/ansible/vars.sh
 
 function info() {
 echo -e "\nWhat do you want me to do, Tear down or Deploy?\n"
-echo -e "USAGE: \033[1;33m./deployment --teardown\033[0m    # To tear down the whole thing (deployment, SERVICES and ingress)"
-echo -e "       \033[1;33m./deployment --deploy\033[0m      # To deploy application the whole thing\n"
+echo -e "USAGE: ${YELLOW}./deployment --teardown${RESET}    # To tear down the whole thing (deployment, SERVICES and ingress)"
+echo -e "       ${YELLOW}./deployment --deploy${RESET}      # To deploy application the whole thing\n"
 }
 
-function tear_down() {
+function tearDown() {
 local SERVICES=(wordpress wordpress-mysql)
 local PVCS=(mysql-pvc-claim www-pvc-claim)
 local START=`date +%s`
-echo -e "\n\033[1;34mTearing Down everything ...\033[0m\n"
+echo -e "\n${BLUE}Tearing Down everything ...${RESET}\n"
 for KUBE in "${SERVICES[@]}"
  do kubectl delete svc ${KUBE} --now
      kubectl delete deployment ${KUBE} --now
@@ -21,18 +22,18 @@ for PVC in "${PVCS[@]}"
  do kubectl delete pvc ${PVC} --now
 done
 local END=`date +%s`
-echo -e "\n\033[1;37mDONE! Time spent on Tearing Down everything was $((END-START)) second(s)\n"
+echo -e "\n${WHITE}DONE! Time spent on Tearing Down everything was $((END-START)) second(s)\n"
 }
 
 function deploy() {
 local COMPONENTS=(secret.yaml service.yaml pvc.yaml ingress.yaml deployment.yaml)
 local START=`date +%s`
-echo -e "\n\033[1;34mDeploying everything ...\033[0m\n"
+echo -e "\n${BLUE}Deploying everything ...${RESET}\n"
 for OBJECT in "${COMPONENTS[@]}"
  do kubectl create -f kubes/${OBJECT}
 done
 local END=`date +%s`
-echo -e "\n\033[1;37mDONE! Time spent on deploying everything was $((END-START)) second(s)\n"
+echo -e "\n${WHITE}DONE! Time spent on deploying everything was $((END-START)) second(s)\n"
 }
 
 function main() {
@@ -42,7 +43,7 @@ function main() {
 }
 case $1 in
   --teardown)
-  tear_down
+  tearDown
   exit 0
   ;;
   --deploy)

@@ -5,7 +5,7 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: configure.me
+    - host: barjaktarov.local
       http:
         paths:
           - backend:

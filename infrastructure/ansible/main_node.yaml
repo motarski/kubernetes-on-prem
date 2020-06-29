@@ -1,0 +1,10 @@
+- hosts: all
+  become: yes
+
+  tasks:
+    - include_vars:
+        file: vars.yaml
+
+    - include: system_management.yaml
+    - include: install_packages.yaml
+    - include: configure_node.yaml

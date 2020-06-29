@@ -1,0 +1,52 @@
+- name: Add gpg keys for authenticating docker packages
+  apt_key:
+    url: "{{ DOCKER_APT_GPG }}"
+    state: present
+
+- name: Add gpg keys for authenticating kubernetes packages
+  apt_key:
+    url: "{{ KUBERNETES_APT_GPG }}"
+    state: present
+
+- name: Add docker APT repository
+  apt_repository:
+    repo: "{{ DOCKER_APT_REPOSITORY }}"
+    state: present
+
+- name: Add kubernetes APT repository
+  apt_repository:
+    repo: "{{ KUBERNETES_APT_REPOSITORY }}"
+    state: present
+
+- name: Manually invoke an update of the package list
+  command: "apt-get update --allow-unauthenticated"
+
+- name: Install system packages
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop: "{{ APT_PACKAGES }}"
+
+- name: Install pip packages
+  pip:
+    name: "{{ PIP_PACKAGES }}"
+
+- name: Install containerization platform
+  apt:
+    name: "{{ DOCKER_ENGINE }}"
+    state: latest
+
+- name: Create kubernetes settings file
+  file:
+    path: "{{ SYSCTL_KUBERNETES_CONFIG }}"
+    state: touch
+
+- name: Configure kernel settings for kubernetes
+  lineinfile:
+    dest: "{{ SYSCTL_KUBERNETES_CONFIG }}"
+    line: "{{ item }}"
+  with_items: "{{ SYSCTL_SETTINGS }}"
+
+- name: Install kubernetes packages
+  command: "apt-get -yq install {{ item }}={{ KUBERNETES_VERSION }}-00 --allow-downgrades"
+  loop: "{{ K8S_PACKAGES }}"

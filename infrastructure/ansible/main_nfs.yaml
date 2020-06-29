@@ -1,0 +1,9 @@
+- hosts: all
+  become: yes
+
+  tasks:
+    - include_vars:
+        file: vars.yaml
+
+    - include: system_management.yaml
+    - include: configure_nfs.yaml

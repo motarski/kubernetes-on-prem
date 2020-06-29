@@ -1,0 +1,71 @@
+# Fully qualified domain name
+FQDN: "barjaktarov.local"
+
+# Kubernetes vars and settings
+KUBERNETES_VERSION: "1.18.4"
+KUBERNETES_API: "172.42.42.100"
+KUBERNETES_POD_NETWORKING: "10.244.0.0/16"
+KUBERNETES_KUBE_DIR: "/home/vagrant/.kube"
+KUBERNETES_KUBE_CERT: "/etc/kubernetes/admin.conf"
+KUBERNETES_NETWORKING: "/vagrant/ansible/config/kube-flannel.yaml"
+
+# Vagrant vars and settings
+VAGRANT_USER: "vagrant"
+VAGRANT_ROOT_PASS: "{{ 'kubeadmin' | password_hash('sha512') }}"
+VAGRANT_NON_HASHED_ROOT_PASS: "kubeadmin"
+VAGRANT_RESOLV_CONF: "/vagrant/ansible/config/resolv.conf"
+
+# Apt repositories & gpg keys
+DOCKER_APT_GPG: "https://download.docker.com/linux/ubuntu/gpg"
+KUBERNETES_APT_GPG: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+KUBERNETES_APT_REPOSITORY: "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+DOCKER_APT_REPOSITORY: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+DOCKER_ENGINE: "docker-ce"
+
+# System kernel settings
+SYSCTL_KUBERNETES_CONFIG: /etc/sysctl.d/10-kubernetes.conf
+SYSCTL_SETTINGS:
+  - "net.bridge.bridge-nf-call-ip6tables = 1"
+  - "net.bridge.bridge-nf-call-iptables = 1"
+
+# Pip
+PIP_PACKAGES:
+  - "openshift"
+
+# Kubernetes packages
+K8S_PACKAGES:
+  - "kubeadm"
+  - "kubelet"
+  - "kubectl"
+
+# System packages installed on all nodes
+APT_PACKAGES:
+  - "sshpass"
+  - "python-pip"
+  - "aptitude"
+  - "apt-transport-https"
+  - "nfs-common"
+
+# NFS server settings and packages
+NFS_DIRECTORY: "/data"
+NFS_EXPORT_SETTINGS: "(rw,sync,no_subtree_check,no_root_squash,insecure)"
+NFS_ID: "nobody"
+NFS_MODE: "0777"
+NFS_SERVICE: "nfs-server"
+
+# HAProxy settings and packages
+HAPROXY_VERSION: "haproxy"
+HAPROXY_CONFIG: "/vagrant/ansible/config/haproxy.cfg"
+
+# CentOS 7 locales
+CENTOS_LOCALES:
+  - "LANG=en_US.utf-8"
+  - "LC_ALL=en_US.utf-8"
+
+# Hosts file records
+ETC_HOSTS:
+  - "172.42.42.100 master.{{FQDN}} master"
+  - "172.42.42.101 node1.{{FQDN}} node1"
+  - "172.42.42.102 node2.{{FQDN}} node2"
+  - "172.42.42.10 loadbalancer.{{FQDN}} loadbalancer"
+  - "172.42.42.20 storage.{{FQDN}} storage"

@@ -1,0 +1,6 @@
+- name: Get bootstrapped authentication token
+  shell: sshpass -p "{{ VAGRANT_NON_HASHED_ROOT_PASS }}" scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no master.{{FQDN}}:/joincluster.sh /joincluster.sh 2>/dev/null
+
+- name: Join new node to the cluster
+  command: sh /joincluster.sh
+  connection: local

@@ -1,0 +1,15 @@
+- name: Install HAProxy
+  apt:
+    name: "{{ HAPROXY_VERSION }}"
+    state: present
+
+- name: Configure HAProxy routing
+  copy:
+    src: "{{ HAPROXY_CONFIG }}"
+    dest: /etc/haproxy/haproxy.cfg
+
+- name: Restart HAProxy service
+  service:
+    name: haproxy
+    state: restarted
+    enabled: yes

@@ -2,8 +2,9 @@
 
 # Globally declared vars
 readonly K8S_COMPONENTS="../components"
+readonly VAGRANT_ROOT_PASS=$(cat ansible/vars.yaml | grep VAGRANT_NON_HASHED_ROOT_PASS: | awk '{print $2}' | sed -e 's/"//g')
 
-function check_dependecies() {
+function checkDependecies() {
 command -v helm >/dev/null 2>&1 || {
  echo >&2 "Helm client is required but it's not installed. Aborting.";
 exit 1;
@@ -17,7 +18,7 @@ command -v kubectl >/dev/null 2>&1 || {
 exit 1;
  }
 }
-function get_kube_config() {
+function getKubeConfig() {
 local KUBE_CONFIG_DIR="${HOME}/.kube"
 [[ ! -d "${KUBE_CONFIG_DIR}" ]] && mkdir -p "${KUBE_CONFIG_DIR}"
 [[ -f ${KUBE_CONFIG_DIR}/config ]] && {
@@ -25,57 +26,43 @@ local KUBE_CONFIG_DIR="${HOME}/.kube"
 cp ${KUBE_CONFIG_DIR}/config ${KUBE_CONFIG_DIR}/config-on-prem.bkp;
 }
 local PORT=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
-sshpass -p "kubeadmin" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBE_CONFIG_DIR}/config
+sshpass -p "${VAGRANT_ROOT_PASS}" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBE_CONFIG_DIR}/config
 }
-function verify_if_cluster_is_running() {
+function isRunning() {
 local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
 [[ ${IS_RUNNING} != "is running" ]] && {
  echo "Something went wrong, cluster is not running. Aborting.";
 exit 1;
  }
 }
-function configure_kong() {
-helm del --purge on-prem > /dev/null 2>&1
-helm install ${K8S_COMPONENTS}/kong --set ingressController.enabled=true --set postgresql.enabled=false --set env.database=off --name on-prem
+function configureKong() {
+helm uninstall kong-on-prem > /dev/null 2>&1
+helm install kong-on-prem ${K8S_COMPONENTS}/kong --set ingressController.enabled=true --set postgresql.enabled=false --set env.database=off
 (($? != 0)) && {
   echo "Kong didn't install with success... Exiting";
   exit 1;
   }
 }
-function configure_nfs_provisioner() {
+function configureNfsProvisioner() {
 local K8S_STORAGECLASS_OBJECTS=(class.yaml deployment.yaml rbac.yaml)
 echo -e "\033[1;34mDeploying Storage class and Dynamic NFS Provisioner ...\033[0m"
 for KUBE in "${K8S_STORAGECLASS_OBJECTS[@]}"
  do kubectl create -f ${K8S_COMPONENTS}/nfs-provisioner/${KUBE}
 done
 }
-function configure_metrics_server() {
-local K8S_METRICS_OBJECTS=(aggregated-metrics-reader.yaml auth-reader.yaml metrics-server-deployment.yaml resource-reader.yaml auth-delegator.yaml metrics-apiservice.yaml metrics-server-service.yaml)
-echo -e "\033[1;34mDeploying Metrics Server ...\033[0m"
-for KUBE in "${K8S_METRICS_OBJECTS[@]}"
- do kubectl create -f ${K8S_COMPONENTS}/metrics-server/${KUBE}
-done
-}
-function configure_tiller() {
-echo -e "\033[1;34mInitializing Tiller for Helm ...\033[0m"
-kubectl create -f ${K8S_COMPONENTS}/helm/helm-sa.yaml
-helm init --service-account tiller
-}
-function rename_context() {
+function renameContext() {
 echo -e "\n\033[1;34mRename and switch context ...\033[0m"
 kubectl config rename-context kubernetes-admin@kubernetes kubernetes
 kubectl config use-context kubernetes
 }
 
 function main() {
-  check_dependecies
-  get_kube_config
-  verify_if_cluster_is_running
-  configure_nfs_provisioner
-  configure_metrics_server
-  configure_tiller
-  configure_kong
-  rename_context
+  checkDependecies
+  getKubeConfig
+  isRunning
+  configureNfsProvisioner
+  configureKong
+  renameContext
 }
 
 main

@@ -1,0 +1,18 @@
+- name: Create NFS file share directory
+  file:
+    path: "{{ NFS_DIRECTORY }}"
+    state: directory
+    owner: "{{ NFS_ID }}"
+    group: "{{ NFS_ID }}"
+    mode: "{{ NFS_MODE }}"
+    recurse: yes
+
+- name: Update the table of local file system that are accessible to NFS clients
+  lineinfile:
+    path: /etc/exports
+    line: "{{ NFS_DIRECTORY}} *{{ NFS_EXPORT_SETTINGS }}"
+    state: present
+
+- name: Re-export updated drectories
+  command: exportfs -r
+  connection: local

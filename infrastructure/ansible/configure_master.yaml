@@ -1,0 +1,33 @@
+- name: Idempotency check for running re-provision
+  stat:
+    path: /joincluster.sh
+  register: cluster_token
+
+- name: Initialize kubernetes control-plane node
+  shell: "kubeadm init --apiserver-advertise-address={{ KUBERNETES_API }} --pod-network-cidr={{ KUBERNETES_POD_NETWORKING }} --kubernetes-version={{ KUBERNETES_VERSION }} >> /root/kubeinit.log 2>/dev/null"
+  when: not cluster_token.stat.exists
+
+- name: Create bootstrap authentication token
+  shell: "kubeadm token create --print-join-command > /joincluster.sh"
+  when: not cluster_token.stat.exists
+
+- name: Create kube config directory
+  file:
+    path: "{{ KUBERNETES_KUBE_DIR }}"
+    state: directory
+    owner: "{{ VAGRANT_USER }}"
+    group: "{{ VAGRANT_USER }}"
+
+- name: Configure access to the cluster
+  copy:
+    src: "{{ KUBERNETES_KUBE_CERT }}"
+    dest: "{{ KUBERNETES_KUBE_DIR }}/config"
+    owner: "{{ VAGRANT_USER }}"
+    group: "{{ VAGRANT_USER }}"
+    remote_src: yes
+
+- name: Deploy virtual network daemonset
+  k8s:
+    state: present
+    src: "{{ KUBERNETES_NETWORKING }}"
+    kubeconfig: "{{ KUBERNETES_KUBE_DIR }}/config"

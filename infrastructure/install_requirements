@@ -1,0 +1,158 @@
+#!/bin/bash
+# Requirements version
+readonly VAGRANT_VERSION="2.2.9"
+readonly VIRTUALBOX_VERSION="6.1"
+readonly HELM_VERSION="3.2.4"
+
+# Requirements apt location
+readonly VAGRANT_URL="https://releases.hashicorp.com/vagrant"
+readonly VAGRANT_DOWNLOAD="${VAGRANT_URL}/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}_x86_64.deb"
+readonly VIRTUALBOX_REPO="deb http://download.virtualbox.org/virtualbox/debian bionic contrib"
+
+# General vars
+readonly OS_FAMILY=$(uname)
+source ansible/vars.sh
+
+# Linux function definitions
+function checkSudo() {
+[[ $UID != 0 ]] && {
+ echo -e "\nThe script requires sudo to run ...";
+ echo -e "USAGE: sudo $0 $*\n";
+ exit 1;
+ }
+}
+
+function installVagrant() {
+  echo -e "\n${BLUE}Installing Vagrant ...${RESET}\n"
+  wget ${VAGRANT_DOWNLOAD}
+  dpkg -i vagrant_${VAGRANT_VERSION}_x86_64.deb
+  statusCheck
+}
+
+function installVirtualBox() {
+  echo -e "\n${BLUE}Installing VirtualBox ...${RESET}\n"
+  wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+  wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+  sudo add-apt-repository "${VIRTUALBOX_REPO}"
+  sudo apt update -q
+  sudo apt -q install virtualbox-${VIRTUALBOX_VERSION}
+  statusCheck
+}
+
+function installKubectl() {
+  echo -e "\n${BLUE}Installing kubectl client ...${RESET}\n"
+  curl --silent -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+  chmod +x kubectl
+  mv kubectl /usr/bin/
+  statusCheck
+}
+
+function installSshPass() {
+  echo -e "\n${BLUE}Installing ssh password utility ...${RESET}\n"
+  apt-get install -y sshpass
+  statusCheck
+}
+
+function installHelm() {
+  echo -e "\n${BLUE}Installing Helm ...${RESET}\n"
+  wget https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz
+  tar --extract --file=helm-v${HELM_VERSION}-linux-amd64.tar.gz linux-amd64/helm
+  mv linux-amd64/helm /usr/bin/helm && rm -rf linux-amd64/helm
+  statusCheck
+}
+
+function installBashCompletion() {
+  echo -e "\n${BLUE}Installing bash completion ...${RESET}\n"
+  sudo apt-get install -y bash-completion
+  echo 'source <(kubectl completion bash)' >>~/.bashrc
+  statusCheck
+}
+
+function statusCheck(){
+(($? != 0)) && {
+  echo -e "\n${RED}Something went wrong... Exiting\n${RESET}";
+  exit 1;
+  }
+}
+
+function updateHosts() {
+  echo -e "\n${BLUE}Hosts file update ...${RESET}\n"
+  [[ $OS_FAMILY =~ ^Darwin ]] && {
+    sudo -- sh -c "sed -i '' '/${FQDN}/d' /etc/hosts"
+    sudo -- sh -c "echo 172.42.42.10 ${FQDN} >> /etc/hosts"
+  } || {
+    sed -i "/${FQDN}/d" /etc/hosts
+    echo "172.42.42.10 ${FQDN}" >> /etc/hosts
+  }
+  statusCheck
+  echo -e "${GREEN}All Requirementes installed...${RESET}"
+  echo -e "Proceed to ${WHITE}vagrant up${RESET}\n"
+}
+
+# Mac functions definition
+function installBrewMac() {
+  brew -v 2>&1 >/dev/null
+  (($? != 0)) && {
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+  statusCheck
+ }
+ echo -e "${GREEN}Brew already installed moving on ...${RESET}"
+}
+function installVagrantMac() {
+  echo -e "${BLUE}Installing Vagrant ...${RESET}\n"
+  brew cask install vagrant
+  statusCheck
+}
+function installVirtualBoxMac() {
+  echo -e "${BLUE}Installing VirtualBox ...${RESET}\n"
+  brew cask install virtualbox
+  statusCheck
+}
+function installKubectlMac() {
+  echo -e "${BLUE}Installing kubectl client ...${RESET}\n"
+  echo -e "Enter sudo"
+  sudo curl -sLO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
+  statusCheck
+}
+function installSshPassMac() {
+  echo -e "${BLUE}Install ssh password utility ...${RESET}\n"
+  brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+  statusCheck
+}
+
+function installHelmMac() {
+  echo -e "${BLUE}Install helm ...${RESET}\n"
+  brew install helm
+  statusCheck
+}
+function installBashCompletionMac() {
+  echo -e "${BLUE}Install bash completion ...${RESET}\n"
+  brew install bash-completion@2
+  echo 'source <(kubectl completion bash)' >>~/.bashrc
+  statusCheck
+}
+
+function mac(){
+  installBrewMac
+  installVagrantMac
+  installVirtualBoxMac
+  installKubectlMac
+  installSshPassMac
+  installHelmMac
+  installBashCompletionMac
+  updateHosts
+}
+
+function linux(){
+  checkSudo
+  installVagrant
+  installVirtualBox
+  installKubectl
+  installSshPass
+  installHelm
+  installBashCompletion
+  updateHosts
+}
+
+# Main entry
+[[ $OS_FAMILY =~ ^Darwin ]] && mac || linux

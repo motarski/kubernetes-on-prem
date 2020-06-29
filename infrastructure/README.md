@@ -1,17 +1,17 @@
-## Immutable infrastructure setup approach
+### Quck note
 
-To setup the whole infrastructure from scratch
+If you have less than 16Gb provision one node less by changing `NodeCount = 1` in Vagrantfile
+
+## Quick setup everything
 
 ```
+$ ./install_requirements
 $ vagrant up
 $ ./infra_setup
-$ sudo ./dns_setup
 ```
 
-## Destroy the infrastructure
-
-To destroy everything and start over
+# Quick delete everything
 
 ```
-$ vagrant destroy
+$ vagrant destroy -f
 ```

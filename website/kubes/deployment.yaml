@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: wordpress-mysql
   labels:
@@ -9,8 +9,7 @@ spec:
     matchLabels:
       app: wordpress
       tier: mysql
-  strategy:
-    type: Recreate
+  serviceName: wordpress-mysql
   template:
     metadata:
       labels:

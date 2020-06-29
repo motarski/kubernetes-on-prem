@@ -1,40 +1,51 @@
-# Infrastructure As A Code
+# Immutable infrastructure
 
 ENV['VAGRANT_NO_PARALLEL'] = 'yes'
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'virtualbox'
 
 Vagrant.configure(2) do |config|
 
-  # NFS Server as an actor of 'Cloud' storage
+  # NFS storage
   config.vm.define "nfs" do |nfs|
     nfs.vm.box = "centos/7"
     nfs.vm.hostname = "storage.barjaktarov.local"
     nfs.vm.network "private_network", ip: "172.42.42.20"
+    nfs.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
     nfs.vm.provider "virtualbox" do |v|
       v.customize ["modifyvm", :id, "--audio", "none"]
       v.name = "storage"
-      v.memory = 256
+      v.memory = 512
       v.cpus = 1
     end
-    nfs.vm.provision "shell", path: "provisioning/storage.sh"
+    nfs.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/main_nfs.yaml"
+      ansible.config_file = "ansible/config/ansible.cfg"
+      ansible.install_mode = "pip"
+      ansible.version = "2.8.4"
   end
+end
 
-  # HAProxy as a Load Balancer for Bare Metal K8s Cluster
+  # HAProxy loadbalancer
   config.vm.define "haproxy" do |haproxy|
-    haproxy.vm.box = "centos/7"
+    haproxy.vm.box = "ubuntu/bionic64"
     haproxy.vm.hostname = "Loadbalancer.barjaktarov.local"
     haproxy.vm.network "private_network", ip: "172.42.42.10"
     haproxy.vm.provider "virtualbox" do |v|
       v.customize ["modifyvm", :id, "--audio", "none"]
       v.name = "loadbalancer"
-      v.memory = 256
+      v.memory = 512
       v.cpus = 1
     end
-    haproxy.vm.provision "shell", path: "provisioning/loadbalancer.sh"
+    haproxy.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/main_haproxy.yaml"
+      ansible.config_file = "ansible/config/ansible.cfg"
+      ansible.install_mode = "pip"
+      ansible.version = "2.8.4"
   end
-
-  # Kubernetes Master Server
+end
+  # Kubernetes master
   config.vm.define "master" do |master|
-    master.vm.box = "centos/7"
+    master.vm.box = "ubuntu/bionic64"
     master.vm.hostname = "master.barjaktarov.local"
     master.vm.network "private_network", ip: "172.42.42.100"
     master.vm.provider "virtualbox" do |v|
@@ -43,27 +54,35 @@ Vagrant.configure(2) do |config|
       v.memory = 2048
       v.cpus = 2
     end
-    master.vm.provision "shell", path: "provisioning/bootstrap.sh"
-    master.vm.provision "shell", path: "provisioning/bootstrap_master.sh"
+    master.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "ansible/main_master.yaml"
+      ansible.config_file = "ansible/config/ansible.cfg"
+      ansible.install_mode = "pip"
+      ansible.version = "2.8.4"
   end
+end
 
   NodeCount = 2
 
-  # Kubernetes Worker Nodes
+  # Kubernetes nodes
   (1..NodeCount).each do |i|
-    config.vm.define "node#{i}" do |workernode|
-      workernode.vm.box = "centos/7"
-      workernode.vm.hostname = "node#{i}.barjaktarov.local"
-      workernode.vm.network "private_network", ip: "172.42.42.10#{i}"
-      workernode.vm.provider "virtualbox" do |v|
+    config.vm.define "node#{i}" do |node|
+      node.vm.box = "ubuntu/bionic64"
+      node.vm.hostname = "node#{i}.barjaktarov.local"
+      node.vm.network "private_network", ip: "172.42.42.10#{i}"
+      node.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--audio", "none"]
         v.name = "node#{i}"
         v.memory = 1500
         v.cpus = 1
       end
-      workernode.vm.provision "shell", path: "provisioning/bootstrap.sh"
-      workernode.vm.provision "shell", path: "provisioning/bootstrap_nodes.sh"
+      node.vm.provision "ansible_local" do |ansible|
+        ansible.playbook = "ansible/main_node.yaml"
+        ansible.config_file = "ansible/config/ansible.cfg"
+        ansible.install_mode = "pip"
+        ansible.version = "2.8.4"
     end
   end
+end
 
 end
