@@ -117,6 +117,13 @@ $ vagrant up node3 # Add third node to the cluster
 $ vagrant up nfs # Provision only the NFS server
 ```
 
+### After successful provisioning my computer become very slow and unresponsive. What should I do?
+Your host probably has 8Gb RAM and you have provisioned the complete solution which now consumes up to 75% of your available resources. Scale down cluster size by removing one node.
+```bash
+$ vagrant halt node2 # Stop the node temporarily
+$ vagrant destroy -f node 2 # Delete the node permanently from the cluster
+```
+
 ### Can I scale up the number of worker nodes after provisioning?
 Yes. You can scale up or down. Change the `NodeCount` value in Vagrantfile to match the new cluster size `ex: NodeCount = 5` and bring the new nodes up
 ```bash
@@ -125,5 +132,5 @@ $ vagrant up node3 node4 node5
 ### Delete the entire cluster including the VM's
 Sometimes you maybe want to start over clean. Immutable infrastructure approach allows you to do that in a matter of minutes
 ```bash
-$ vagrant destroy master node1 node2 nfs haproxy -f
+$ vagrant destroy -f master node1 node2 nfs haproxy
 ```
