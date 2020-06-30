@@ -34,7 +34,7 @@ function installVirtualBox() {
   wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
   wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
   sudo add-apt-repository "${VIRTUALBOX_REPO}"
-  sudo apt update -q
+  sudo apt update -qq
   sudo apt -q install virtualbox-${VIRTUALBOX_VERSION}
   statusCheck
 }
@@ -89,7 +89,7 @@ function updateHosts() {
   echo -e "Proceed to ${WHITE}vagrant up${RESET}\n"
 }
 
-# Mac functions definition
+# Mac function definitions
 function installBrewMac() {
   brew -v 2>&1 >/dev/null
   (($? != 0)) && {

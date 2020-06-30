@@ -1,7 +1,7 @@
 # Testing cluster functionality
-## Deploy demo wordpress site
+## WordPress demo site deployment
 
-The application will deploy two kubernetes pods that are using NFS dynamic provisioner to claim volumes. It wil also deploy an ingress object to test the Loadbalancer component
+This script will deploy two kubernetes pods that use NFS dynamic provisioner functionality. It will also deploy an ingress object to test the Loadbalancer functionality
 
 ```
 $ cd website

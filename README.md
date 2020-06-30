@@ -1,6 +1,6 @@
 #  The most complete solution for provisioning on-premise kubernetes cluster
 _Solution version release: v2.0_
-## What is new in this version
+## What's new in this version
 - Scale up cluster size
 - Kubernetes version is now `v1.18.4`
 - Ansible is the tool used for provisioning
@@ -8,11 +8,11 @@ _Solution version release: v2.0_
 - Everything is automated. Installing requirements is now 'one-step script'
 - Platform auto detection upon installing requirements (Linux or Mac)
 - `Ubuntu` is now used for nodes and HAProxy. `CentOS` for the NFS
-- Database of the demo wordpress site is now deployed as stateful set
+- WordPress database is now deployed as stateful set
 
 ## Infrastructure as code - IaC
 
-- Immutable infrastructure approach. Provisioning VM's with Vagrant
+- Immutable infrastructure provisioned with Vagrant
 - Configuration management with Ansible
 - Installing requirements with Bash scripts
 
@@ -28,13 +28,13 @@ _Solution version release: v2.0_
 - Loadbalancer
 
 ## Hosts supported
-The solution is tested end-to-end on both Linux and Mac
+The solution is tested end-to-end on both hosts
 
 - **MacOs Catalina `10.15.5`** with Oracle VirtualBox `6.1`, Vagrant `2.2.9`
 - **Ubuntu Linux `18.04 LTS`** with Oracle VirtualBox `6.1`, Vagrant `2.2.9`
 
 ## Cavaets
-- Current cluster dimensioning is recommended for hosts that have 16Gb+ RAM. If your host has less then I recommended to provision the cluster with one node less. This can be done by setting the NodeCount value in Vagrantfile to one
+- Current cluster dimensioning is recommended for hosts that have 16Gb RAM or more. If your host has less than that I recommended to provision the cluster with one node less. This can be done by setting the NodeCount value in Vagrantfile to one
 
 ```bash
 
@@ -58,19 +58,19 @@ $ vagrant up node1 node2 # To continue after master has been re-provisioned manu
 
 # Provision your own on-premise kubernetes cluster
 
-### Step 1: Install requirements
+### Step 1: Install required dependencies
 On linux you will be asked to run the script with sudo. When running on Mac you will be asked for sudo pass during script execution
 ```bash
 $ cd infrastructure
 $ ./install_requirements
 ```
 
-### Step 2: Provision and configure the whole thing
+### Step 2: Provision and configure kubernetes cluster
 ```bash
 $ vagrant up
 ```
 
-### Step 3: Deploy core infrastructure components
+### Step 3: Configure core cluster functionalities
 ```bash
 $ ./infra_setup
 ```
@@ -91,9 +91,9 @@ $ ./infra_setup
 ---
 # Tips after provisioning the cluster
 
-### How can I check if the cluster is operational?
+### How can I check if the cluster is working?
 
-Deploy the demo Wordpress site. Check the documentation under website directory
+Deploy the demo WordPress site. Check the documentation under website directory
 
 ### Shut down VM's when you don't want to use the cluster
 
@@ -111,16 +111,16 @@ $ vagrant provision haproxy
 ```
 
 ### Provision only selected components
-Not always you have to provision the entire solution. You can select which compoment to provision
+Not always you have to provision the entire solution. You can select which components to provision
 ```bash
-$ vagrant up node3 # Will add third node to the cluster
-$ vagrant up nfs # Will provision only the NFS server
+$ vagrant up node3 # Add third node to the cluster
+$ vagrant up nfs # Provision only the NFS server
 ```
 
-### Can I scale up the number of worker nodes after provisioing?
-Yes, you can scale up or down. Change the `NodeCount` value in Vagrantfile to match the new cluster size `ex: NodeCount = 5` and bring the new nodes up
+### Can I scale up the number of worker nodes after provisioning?
+Yes. You can scale up or down. Change the `NodeCount` value in Vagrantfile to match the new cluster size `ex: NodeCount = 5` and bring the new nodes up
 ```bash
-$ vagrant node3 node4 node5
+$ vagrant up node3 node4 node5
 ```
 ### Delete the entire cluster including the VM's
 Sometimes you maybe want to start over clean. Immutable infrastructure approach allows you to do that in a matter of minutes
