@@ -4,9 +4,9 @@ _Solution version release: v2.0_
 - Scale up cluster size
 - Kubernetes version is now `v1.18.4`
 - Ansible is the tool used for provisioning
-- Helm 3 installed together with the requirements
-- Everything is automated. Installing requirements is now 'one-step script'
-- Platform auto detection upon installing requirements (Linux or Mac)
+- Helm 3 is now used for managing kubernetes apps
+- Everything is automated. Installing dependencies is now 'one-step script'
+- Operating system auto detection upon installing requirements
 - `Ubuntu` is now used for nodes and HAProxy. `CentOS` for the NFS
 - WordPress database is now deployed as stateful set
 
