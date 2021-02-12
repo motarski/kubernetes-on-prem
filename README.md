@@ -7,8 +7,9 @@ _Solution version release: v2.0_
 - Helm 3 is now used for managing kubernetes apps
 - Everything is automated. Installing dependencies is now 'one-step script'
 - Operating system auto detection upon installing requirements
-- `Ubuntu` is now used for nodes and HAProxy. `CentOS` for the NFS
+- `Ubuntu` is now used for all solution components
 - WordPress database is now deployed as stateful set
+- Python 3 support only
 
 ## Infrastructure as code - IaC
 
@@ -26,6 +27,9 @@ _Solution version release: v2.0_
 - API gateway
 - Custom storage class for volume provisioning
 - Loadbalancer
+
+## Python 3 supported only
+Python has officially dropped support for previous versions on `23/01/21`. This solution uses pip and it is now patched to support python 3
 
 ## Hosts supported
 The solution is tested end-to-end on both hosts

@@ -50,17 +50,13 @@ APT_PACKAGES:
 NFS_DIRECTORY: "/data"
 NFS_EXPORT_SETTINGS: "(rw,sync,no_subtree_check,no_root_squash,insecure)"
 NFS_ID: "nobody"
+NFS_GROUP: "nogroup"
 NFS_MODE: "0777"
-NFS_SERVICE: "nfs-server"
+NFS_SERVER: "nfs-kernel-server"
 
 # HAProxy settings and packages
 HAPROXY_VERSION: "haproxy"
 HAPROXY_CONFIG: "/vagrant/ansible/config/haproxy.cfg"
-
-# CentOS 7 locales
-CENTOS_LOCALES:
-  - "LANG=en_US.utf-8"
-  - "LC_ALL=en_US.utf-8"
 
 # Hosts file records
 ETC_HOSTS:

@@ -29,25 +29,3 @@
     name: root
     password: "{{ VAGRANT_ROOT_PASS }}"
     update_password: always
-
-- name: Disable SELinux
-  selinux:
-    state: disabled
-  when: ansible_os_family == "RedHat"
-
-- name: Set locale
-  lineinfile:
-    path: /etc/environment
-    line: "{{ item }}"
-    state: present
-  with_items: "{{ CENTOS_LOCALES }}"
-  when: ansible_os_family == "RedHat"
-
-- name: Start and enable NFS service
-  service:
-    name: "{{ NFS_SERVICE }}"
-    state: started
-    enabled: true
-  when:
-    - ansible_os_family == "RedHat"
-    - hostvars[inventory_hostname].ansible_hostname == "storage"

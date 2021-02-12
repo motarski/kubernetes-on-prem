@@ -1,9 +1,14 @@
+- name: Install NFS server
+  apt:
+    name: "{{ NFS_SERVER }}"
+    state: present
+
 - name: Create NFS file share directory
   file:
     path: "{{ NFS_DIRECTORY }}"
     state: directory
     owner: "{{ NFS_ID }}"
-    group: "{{ NFS_ID }}"
+    group: "{{ NFS_GROUP }}"
     mode: "{{ NFS_MODE }}"
     recurse: yes
 
