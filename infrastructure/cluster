@@ -1,33 +1,37 @@
 #!/usr/bin/env python
 
 import subprocess
+import vagrant
 from os import system
 from sys import argv, exit
 
-# List of nodes in play
+# Just spin up these nodes
 nodes_list = ['haproxy', 'master', 'node1']
+run = 'vagrant'
 
 # Get user argument, will accept only the one, the first one
 try:
-    operation = (str(argv[1]))
+    operation = (str(argv[1]).lower())
 except:
     print('Need one argument. What do you want to do?\n')
     print('E.g: ./cluster status      # To give vagrant status')
     print('     ./cluster up          # To bring up cluster')
     print('     ./cluster halt        # To shutdown gracefully')
+    exit(1)
 
 # Define functions
 def cluster_status():
-    cmd = subprocess.run(['vagrant', operation])
+    cmd = subprocess.run([run, operation])
 
-def cluster_up_or_down():
+
+def cluster_up_or_halt():
     for node in nodes_list:
-        cmd = subprocess.run(['vagrant', operation, node])
+        cmd = subprocess.run([run, operation, node])
 
 # Main entry
 if operation == 'status':
     cluster_status()
 elif operation == 'up' or operation == 'halt':
-    cluster_up_or_down()
+    cluster_up_or_halt()
 else:
-    print(f"EXIT: { operation } is unknown operation")
+    print(f'EXIT: { operation } is unknown operation')
