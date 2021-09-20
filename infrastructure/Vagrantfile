@@ -7,7 +7,7 @@ Vagrant.configure(2) do |config|
 
   # NFS storage
   config.vm.define "nfs" do |nfs|
-    nfs.vm.box = "ubuntu/bionic64"
+    nfs.vm.box = "ubuntu/focal64"
     nfs.vm.hostname = "storage.barjaktarov.local"
     nfs.vm.network "private_network", ip: "172.42.42.20"
     nfs.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
@@ -20,15 +20,14 @@ Vagrant.configure(2) do |config|
     nfs.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/main_nfs.yaml"
       ansible.config_file = "ansible/config/ansible.cfg"
-      ansible.install_mode = "pip"
-      ansible.pip_install_cmd = "sudo apt-get install -y python3-distutils && curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3"
-      ansible.version = "2.8.4"
+      ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
+      ansible.version = "2.9.6"
   end
 end
 
   # HAProxy loadbalancer
   config.vm.define "haproxy" do |haproxy|
-    haproxy.vm.box = "ubuntu/bionic64"
+    haproxy.vm.box = "ubuntu/focal64"
     haproxy.vm.hostname = "Loadbalancer.barjaktarov.local"
     haproxy.vm.network "private_network", ip: "172.42.42.10"
     haproxy.vm.provider "virtualbox" do |v|
@@ -40,14 +39,13 @@ end
     haproxy.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/main_haproxy.yaml"
       ansible.config_file = "ansible/config/ansible.cfg"
-      ansible.install_mode = "pip"
-      ansible.pip_install_cmd = "sudo apt-get install -y python3-distutils && curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3"
-      ansible.version = "2.8.4"
+      ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
+      ansible.version = "2.9.6"
   end
 end
   # Kubernetes master
   config.vm.define "master" do |master|
-    master.vm.box = "ubuntu/bionic64"
+    master.vm.box = "ubuntu/focal64"
     master.vm.hostname = "master.barjaktarov.local"
     master.vm.network "private_network", ip: "172.42.42.100"
     master.vm.provider "virtualbox" do |v|
@@ -59,9 +57,8 @@ end
     master.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "ansible/main_master.yaml"
       ansible.config_file = "ansible/config/ansible.cfg"
-      ansible.install_mode = "pip"
-      ansible.pip_install_cmd = "sudo apt-get install -y python3-distutils && curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3"
-      ansible.version = "2.8.4"
+      ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
+      ansible.version = "2.9.6"
   end
 end
 
@@ -70,7 +67,7 @@ end
   # Kubernetes nodes
   (1..NodeCount).each do |i|
     config.vm.define "node#{i}" do |node|
-      node.vm.box = "ubuntu/bionic64"
+      node.vm.box = "ubuntu/focal64"
       node.vm.hostname = "node#{i}.barjaktarov.local"
       node.vm.network "private_network", ip: "172.42.42.10#{i}"
       node.vm.provider "virtualbox" do |v|
@@ -80,11 +77,10 @@ end
         v.cpus = 1
       end
       node.vm.provision "ansible_local" do |ansible|
-        ansible.playbook = "ansible/main_node.yaml"
-        ansible.config_file = "ansible/config/ansible.cfg"
-        ansible.install_mode = "pip"
-        ansible.pip_install_cmd = "sudo apt-get install -y python3-distutils && curl -s https://bootstrap.pypa.io/get-pip.py | sudo python3"
-        ansible.version = "2.8.4"
+      ansible.playbook = "ansible/main_node.yaml"
+      ansible.config_file = "ansible/config/ansible.cfg"
+      ansible.extra_vars = { ansible_python_interpreter:"/usr/bin/python3" }
+      ansible.version = "2.9.6"
     end
   end
 end

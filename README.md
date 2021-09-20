@@ -2,12 +2,13 @@
 _Solution version release: v2.0_
 ## What's new in this version
 - Scale up cluster size
-- Kubernetes version is now `v1.18.4`
+- Kubernetes version is now `v1.21.2`
 - Ansible is the tool used for provisioning
-- Helm 3 is now used for managing kubernetes apps
+- Helm 3 used for managing kubernetes apps
+- Nginx Ingress Controller stable version `1.0.0`
 - Everything is automated. Installing dependencies is now 'one-step script'
 - Operating system auto detection upon installing requirements
-- `Ubuntu` is now used for all solution components
+- `Ubuntu` used for all components
 - WordPress database is now deployed as stateful set
 - Python 3 support only
 
@@ -18,6 +19,7 @@ _Solution version release: v2.0_
 - Installing requirements with Bash scripts
 
 ## Components included
+- Nginx-Ingress Controller
 - Kubernetes control-plane
 - Two worker nodes
 - NFS server
@@ -59,6 +61,36 @@ $ vagrant up node1 node2 # To continue after master has been re-provisioned manu
 - If you discovered new ones email me: ivan.thegreat@gmail.com
 
 ---
+
+## Known bugs
+
+NFS dynamic provisioning does not create volumes in v.1.20.x is still present in current version 1.21.2
+
+"I recently upgraded a bare-metal Kubernetes cluster to the latest v1.20.0. But since then, I am no longer able to provision additional PersistentVolumes. Existing PVCs which were already bound prior to the upgrade still work flawlessly. ~ https://github.com/openebs/openebs/issues/3314"
+
+### Workaround solution
+
+Solutiion used from https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/issues/25#issuecomment-742616668
+
+Current workaround is to edit `/etc/kubernetes/manifests/kube-apiserver.yaml`
+
+Under here:
+```
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+```
+Add this line:
+```
+- --feature-gates=RemoveSelfLink=false
+```
+
+The do this:
+```bash
+$ kubectl apply -f /etc/kubernetes/manifests/kube-apiserver.yaml
+$ kubectl apply -f /etc/kubernetes/manifests/kube-apiserver.yaml
+```
 
 # Provision your own on-premise kubernetes cluster
 

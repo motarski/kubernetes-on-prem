@@ -1,13 +1,19 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: wordpress
   namespace: default
+  annotations:
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
     - host: barjaktarov.local
       http:
         paths:
           - backend:
-              serviceName: wordpress
-              servicePort: 80
+              service:
+                name: wordpress
+                port: 
+                  number: 80
+            path: /
+            pathType: ImplementationSpecific

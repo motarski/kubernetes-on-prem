@@ -27,17 +27,19 @@ cp ${KUBE_CONFIG_DIR}/config ${KUBE_CONFIG_DIR}/config-on-prem.bkp;
 }
 local PORT=$(vagrant ssh-config master | grep -v Host | tr -s ' ' | cut -d ' ' -f3 | grep ^[0-9])
 sshpass -p "${VAGRANT_ROOT_PASS}" scp -P ${PORT} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@127.0.0.1:/etc/kubernetes/admin.conf ${KUBE_CONFIG_DIR}/config
+chmod 500 ${KUBE_CONFIG_DIR}/config
 }
 function isRunning() {
-local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $3, $4}')
+local IS_RUNNING=$(kubectl cluster-info 2> /dev/null | head -1 | awk '{print $4, $5}')
 [[ ${IS_RUNNING} != "is running" ]] && {
  echo "Something went wrong, cluster is not running. Aborting.";
 exit 1;
  }
 }
-function configureKong() {
-helm uninstall kong-on-prem > /dev/null 2>&1
-helm install kong-on-prem ${K8S_COMPONENTS}/kong --set ingressController.enabled=true --set postgresql.enabled=false --set env.database=off
+function configureNginxIngress() {
+helm uninstall ingress-nginx-on-prem > /dev/null 2>&1
+helm install ingress-nginx-on-prem ${K8S_COMPONENTS}/ingress-nginx --namespace default --set controller.replicaCount=1
+#helm install kong-on-prem ${K8S_COMPONENTS}/nginx-ingress --set ingressController.enabled=true --set postgresql.enabled=false --set env.database=off
 (($? != 0)) && {
   echo "Kong didn't install with success... Exiting";
   exit 1;
@@ -61,7 +63,7 @@ function main() {
   getKubeConfig
   isRunning
   configureNfsProvisioner
-  configureKong
+  configureNginxIngress
   renameContext
 }
 

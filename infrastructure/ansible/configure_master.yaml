@@ -27,7 +27,6 @@
     remote_src: yes
 
 - name: Deploy virtual network daemonset
-  k8s:
-    state: present
-    src: "{{ KUBERNETES_NETWORKING }}"
-    kubeconfig: "{{ KUBERNETES_KUBE_DIR }}/config"
+  become_user: "{{ VAGRANT_USER }}"
+  connection: local
+  command: kubectl apply -f "{{ KUBERNETES_NETWORKING }}"

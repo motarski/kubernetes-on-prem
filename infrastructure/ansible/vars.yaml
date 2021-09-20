@@ -2,7 +2,7 @@
 FQDN: "barjaktarov.local"
 
 # Kubernetes vars and settings
-KUBERNETES_VERSION: "1.18.4"
+KUBERNETES_VERSION: "1.21.2"
 KUBERNETES_API: "172.42.42.100"
 KUBERNETES_POD_NETWORKING: "10.244.0.0/16"
 KUBERNETES_KUBE_DIR: "/home/vagrant/.kube"
@@ -41,7 +41,8 @@ K8S_PACKAGES:
 # System packages installed on all nodes
 APT_PACKAGES:
   - "sshpass"
-  - "python-pip"
+  - "pip"
+  - "python-setuptools"
   - "aptitude"
   - "apt-transport-https"
   - "nfs-common"
